@@ -65,11 +65,10 @@ exports.getsensorvalue = functions.https.onRequest((req, res) => {
         res.send({ status: 'error', error: errorcodes.invalidSecret });
         return;
     }
+    
     cors(req, res, () => {
         console.log('got request for getsensorvalue, parameters are correct');
-        admin.database().ref('/sensorvalues').once('value').then(snapshot => {
-            console.log('ok, got data' + snapshot);
-
+        admin.database().ref('/sensorvalues').orderByKey().limitToLast(10).once('value').then(snapshot => {
             res.send({ status: 'ok', data: snapshot });
         }).catch(error => {
             res.send({ status: 'error', error: error });

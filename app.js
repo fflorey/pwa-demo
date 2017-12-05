@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// import $ from 'jquery';   // does not work in browser, only EDGE
 
 (function () {
   'use strict';
@@ -47,7 +48,7 @@
         label: "mylabel",
         
         data: {
-          backgroundColor: '#fa6384',
+          backgroundColor: '#fa6384', 
           labels: lables,
           datasets: [{
             label: 'temperature',

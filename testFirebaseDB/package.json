@@ -1,0 +1,17 @@
+{
+  "name": "testFirebaseDB",
+  "version": "1.0.0",
+  "description": "",
+  "main": "demo.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "firebase": "^4.7.0",
+    "firebase-admin": "^5.5.1",
+    "firebase-functions": "^0.7.3"
+  }
+}
