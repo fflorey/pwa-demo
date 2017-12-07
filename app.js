@@ -18,70 +18,101 @@
   'use strict';
 
   var ctx = document.getElementById("myChart");
+  var pwe = document.getElementById("pw-note");
+  var pwnc = document.getElementById("pw-notcorrect");
+  var counter = 0;
 
   var app = {
     details: "about me"
   };
 
-  $.ajax({
-    url: "https://us-central1-sensor-pwa.cloudfunctions.net/getsensorvalue?password=simsalabimm4711kruemelmonster", crossDomain: true, success: function (result) {
-      var data = [];
-      var lables = [];
-      var lastValue = -1000;
-      var x = 0;
-      for (var props in result.data) {
-        console.log('temp:' + props + " date: " + result.data[props].date + " temp: " + result.data[props].temperature);
-        let temp = (result.data[props].temperature) / 100;
-        if ( true  ) {
-          console.log('x: ' + x + " y: " +  temp);
-          data.push( temp );
-          if ( (x % 5) == 0 ) 
-            lables.push(new Date(result.data[props].date).toLocaleString());          
-          else 
-            lables.push('');          
-        }
-        x++;
-        lastValue = temp;
-      }
-      var myChart = new Chart(ctx, {
-        type: 'line',
-        label: "mylabel",
-        
-        data: {
-          backgroundColor: '#fa6384', 
-          labels: lables,
-          datasets: [{
-            label: 'temperature',
-            data: data,
-            fill: true
-          }]
+  var oldPassword = localStorage.getItem('globalPassword');
+  ctx.style.display = 'none';
+  pwe.style.display = 'none';
+  pwnc.style.display = 'none';
+  var counter = localStorage.getItem('getNumberOfItemsToGet');
+  if ( counter == null || counter == undefined || counter == 0 ) {
+    counter = 10;
+  }
 
-        },
-        options: {
-          scales: {
-            yAxes: [{
-                ticks: {
-                    min: -5
-                }
-            }]
-          },
-          elements: {
-            line: {
-              tension: 0, // disables bezier curves
-            },
-            animation: {
-              duration: 0, // general animation time
-            },
-            hover: {
-              animationDuration: 0, // duration of animations when hovering an item
-            },
-            responsiveAnimationDuration: 0, // animation duration after a resize
+  if (oldPassword !== undefined && oldPassword !== '' && oldPassword !== null) {
+    console.log('stored password: ' + oldPassword);
+    $.ajax({
+      url: "https://us-central1-sensor-pwa.cloudfunctions.net/getsensorvalue?password=" + oldPassword + '&counter='+counter, crossDomain: true, success: function (result) {
+        console.log('status: >' + result.status + '< error: ' + result.error);
+        if (result.status == 'error' && result.error == '1001') {
+          pwnc.style.display = 'block';
+          console.log('huhu, password not correct?');
+        } else {
+          ctx.style.display = 'block';
+          var data = [];
+          var lables = [];
+          var lastValue = -1000;
+          var x = 0;
+          for (var props in result.data) {
+            console.log('temp:' + props + " date: " + result.data[props].date + " temp: " + result.data[props].temperature);
+            let temp = (result.data[props].temperature) / 100;
+            if (true) {
+              console.log('x: ' + x + " y: " + temp);
+              data.push(temp);
+              if ((x % 5) == 0)
+                lables.push(new Date(result.data[props].date).toLocaleString());
+              else
+                lables.push('');
+            }
+            x++;
+            lastValue = temp;
           }
-        }
-      });
+          var myChart = new Chart(ctx, {
+            type: 'line',
+            label: "mylabel",
 
-    }
-  });
+            data: {
+              backgroundColor: '#fa6384',
+              labels: lables,
+              datasets: [{
+                label: 'temperature',
+                data: data,
+                fill: true
+              }]
+
+            },
+            options: {
+              scales: {
+                yAxes: [{
+                  ticks: {
+                    min: -5
+                  }
+                }]
+              },
+              elements: {
+                line: {
+                  tension: 0, // disables bezier curves
+                },
+                animation: {
+                  duration: 0, // general animation time
+                },
+                hover: {
+                  animationDuration: 0, // duration of animations when hovering an item
+                },
+                responsiveAnimationDuration: 0, // animation duration after a resize
+              }
+            }
+          });
+        }
+      },
+      error: function (xhr, ajaxOptions, thrownError) {
+        console.log('errror!');
+        alert(xhr.status);
+        alert(thrownError);
+      }
+    });
+  } else {
+    console.log('no pw set: ' + oldPassword);
+    pwe.style.display = 'block';
+
+  }
+
 
   // TODO add service worker code here
 
