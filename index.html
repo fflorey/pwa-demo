@@ -1,75 +1,91 @@
 <!DOCTYPE html>
 <!-- comment -->
 <html lang="en">
+
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
   <title>Starter Template - Materialize</title>
 
   <!-- CSS  -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
+  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
   <link rel="manifest" href="manifest.json">
 </head>
+
 <body>
   <header>
-  <nav class="blue-grey lighten-2" role="navigation">
-    <div class="nav-wrapper container"><!-- a id="logo-container" href="#" class="brand-logo">Logo</a -->
-      <ul class="right hide-on-med-and-down">
-        <li><a href="./info.html">About</a></li>
-        <li><a href="./settings.html">Settings</a></li>
-      </ul>
+    <nav class="blue-grey lighten-2" role="navigation">
+      <div class="nav-wrapper container">
+        <!-- a id="logo-container" href="#" class="brand-logo">Logo</a -->
+        <ul class="right hide-on-med-and-down">
+          <li>
+            <a href="./info.html">About</a>
+          </li>
+          <li>
+            <a href="./settings.html">Settings</a>
+          </li>
+        </ul>
 
-      <ul id="nav-mobile" class="side-nav">
-        <li><a href="./info.html">About</a></li>
-        <li><a href="./settings.html">Settings</a></li>
-      </ul>
-      <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
-    </div>
-  </nav>
-</header>
-<main>
-  <div class="section no-pad-bot" id="index-banner">
-    <div class="container">
-      <br><br>
-      <h1 class="header center black-text">Temperature App</h1>
-      <div class="row center">
-        <h5 class="header col s12 light">Simply show the temperature in different areas of our home</h5>
+        <ul id="nav-mobile" class="side-nav">
+          <li>
+            <a href="./info.html">About</a>
+          </li>
+          <li>
+            <a href="./settings.html">Settings</a>
+          </li>
+        </ul>
+        <a href="#" data-activates="nav-mobile" class="button-collapse">
+          <i class="material-icons">menu</i>
+        </a>
       </div>
-      <!-- button is nice, but not needed... -->
-      <!-- div class="row center">
+    </nav>
+  </header>
+  <main>
+    <div class="section no-pad-bot" id="index-banner">
+      <div class="container">
+        <br>
+        <br>
+        <h1 class="header center black-text">Temperature App</h1>
+        <div class="row center">
+          <h5 class="header col s12 light">Simply show the temperature in different areas of our home</h5>
+        </div>
+        <!-- button is nice, but not needed... -->
+        <!-- div class="row center">
         <a href="http://materializecss.com/getting-started.html" id="download-button" class="btn-large waves-effect waves-light blue-grey darken-4">Get Started</a>
       </div -->
-      <br><br>
+        <br>
+        <br>
 
-          <div class="section" id="pw-note">
-              <div class="row center">                  
+        <div class="section" id="pw-note">
+          <div class="row center">
             <h5 class="header col s12 light">Sorry, you must set the global password before using this app. Please, go to settings first!</h5>
-            </div>
           </div>
-          <div class="section" id="pw-notcorrect">
-              <div class="row center">                  
+        </div>
+        <div class="section" id="pw-notcorrect">
+          <div class="row center">
             <h5 class="header col s12 red bold">Sorry, your global password is not correct! Go to settings and enter the correct one!</h5>
-            </div>
           </div>
+        </div>
 
-    
 
+
+      </div>
     </div>
-  </div>
 
-  <div class="container">
-      <div class="section">
-        <canvas id="myChart" width="400" height="200"></canvas>
-  </div>
-  </div>
-</main>
+    <div class="container">
+      <div class="row left-align">
+        <canvas id="myChart" width="90%" height="40%"></canvas>
+      </div>
+    </div>
+  </main>
   <footer class="page-footer blue-grey darken-2">
-     
+
     <div class="footer-copyright">
       <div class="container">
-      Simple PWA, made by <a class="orange-text text-lighten-3" href="https://thinkitdifferent-de.blogspot.de/">Georg H.F. Florey</a>
+        Simple PWA, made by
+        <a class="orange-text text-lighten-3" href="https://thinkitdifferent-de.blogspot.de/">Georg H.F. Florey</a>
       </div>
     </div>
   </footer>
@@ -82,5 +98,6 @@
   <script src="/app.js"></script>
 
 
-  </body>
+</body>
+
 </html>
