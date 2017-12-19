@@ -4,6 +4,8 @@ var filesToCache = [
   '/settings.html',
   '/settings.js',
   '/info.html',
+  '/chart.js',
+  '/chartpage.html',
   '/app.js',
   '/css/materialize.css',
   '/css/style.css',
@@ -16,22 +18,6 @@ var filesToCache = [
   '/fonts/roboto/Roboto-Medium.woff2',
   '/fonts/roboto/Roboto-Light.woff2'
 ];
-
-/*
-  '/settings.html',
-  '/settings.js',
-  '/info.html',
-  '/app.js',
-  '/css/materialize.css',
-  '/css/style.css',
-  '/js/init.js',
-  '/manifest.json',
-  '/js/materialize.js',
-  '/js/jquery-2.1.1.min.js',
-  '/fonts/roboto/Roboto-Regular.woff2',
-  '/fonts/roboto/Roboto-Medium.woff2',
-  '/fonts/roboto/Roboto-Light.woff2'
-*/
 
 self.addEventListener('install', function(e) {
   console.log('[ServiceWorker] Install - pwa-step1');
@@ -63,7 +49,6 @@ self.addEventListener('activate', function(e) {
 
 self.addEventListener('fetch', function(event) {
     console.log('[ServiceWorker] Fetch', event.request.url);
-    // console.log('[ServiceWorker] Fetch', event.request);
     event.respondWith(
       caches.match(event.request).then(function(response) {
         console.log('response ' + JSON.stringify(response) + " event: " + event.request.url);
@@ -73,6 +58,8 @@ self.addEventListener('fetch', function(event) {
           console.log('need to get from network: ' + JSON.stringify(event.request));
           return fetch(event.request);
         }
+      }).catch ( err => {
+        console.log('error during fetch from network: ' + err);
       })
     );
 });

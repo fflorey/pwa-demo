@@ -14,107 +14,106 @@
 
 // import $ from 'jquery';   // does not work in browser, only EDGE
 
+function gotoChartPage ( key, description, target_url ) {
+  localStorage.setItem ( 'hashValue', key);
+  localStorage.setItem ( 'sensorDescription', description);
+  window.location.href = target_url;
+}
+
+
 (function () {
   'use strict';
 
-  var ctx = document.getElementById("myChart");
+  function getSensorData() {
+    return new Promise((resolve, reject) => {
+      if (globalPassword === undefined || globalPassword === '' || globalPassword === null) {
+        return reject({ error: 1, message: 'password not set' });
+      }
+      $.ajax({
+        url: "https://us-central1-sensor-pwa.cloudfunctions.net/getsensordata?password=" + globalPassword,
+        crossDomain: true, success: (result) => {
+          console.log('status: >' + result.status + '< error: ' + result.error);
+          if (result.status == 'error' && result.error == '1001') {
+            pwnc.style.display = 'block';
+          } else {
+            return resolve(result);
+          }
+        }, error: function (xhr, ajaxOptions, thrownError) {
+          console.error('error!');
+          return reject({error:2, message: thrownError})
+        }
+      });
+    });
+  }
+  
+////////////////////////////////////////////////////////////////////////////////
+
   var pwe = document.getElementById("pw-note");
   var pwnc = document.getElementById("pw-notcorrect");
+  var globalPassword = localStorage.getItem('globalPassword');
+  var counter = localStorage.getItem('getNumberOfItemsToGet');
+  if (counter == null || counter == undefined || counter == 0) {
+    counter = 10;
+  }
+  pwe.style.display = 'none';
+  pwnc.style.display = 'none';
   var counter = 0;
 
   var app = {
     details: "about me"
   };
 
-  var oldPassword = localStorage.getItem('globalPassword');
-  ctx.style.display = 'none';
-  pwe.style.display = 'none';
-  pwnc.style.display = 'none';
-  var counter = localStorage.getItem('getNumberOfItemsToGet');
-  if ( counter == null || counter == undefined || counter == 0 ) {
-    counter = 10;
-  }
-
-  if (oldPassword !== undefined && oldPassword !== '' && oldPassword !== null) {
-    console.log('stored password: ' + oldPassword);
-    $.ajax({
-      url: "https://us-central1-sensor-pwa.cloudfunctions.net/getsensorvalue?password=" + oldPassword + '&counter='+counter, crossDomain: true, success: function (result) {
-        console.log('status: >' + result.status + '< error: ' + result.error);
-        if (result.status == 'error' && result.error == '1001') {
-          pwnc.style.display = 'block';
-          console.log('huhu, password not correct?');
-        } else {
-          ctx.style.display = 'block';
-          var data = [];
-          var lables = [];
-          var lastValue = -1000;
-          var x = 0;
-          for (var props in result.data) {
-            console.log('temp:' + props + " date: " + result.data[props].date + " temp: " + result.data[props].temperature);
-            let temp = (result.data[props].temperature) / 100;
-            if (true) {
-              console.log('x: ' + x + " y: " + temp);
-              data.push(temp);
-              if ((x % 5) == 0)
-                lables.push(new Date(result.data[props].date).toLocaleString());
-              else
-                lables.push('');
-            }
-            x++;
-            lastValue = temp;
-          }
-          var myChart = new Chart(ctx, {
-            type: 'line',
-            label: "mylabel",
-
-            data: {
-              backgroundColor: '#fa6384',
-              labels: lables,
-              datasets: [{
-                label: 'temperature',
-                data: data,
-                fill: true
-              }]
-
-            },
-            options: {
-              scales: {
-                yAxes: [{
-                  ticks: {
-                    min: -5
-                  }
-                }]
-              },
-              elements: {
-                line: {
-                  tension: 0, // disables bezier curves
-                },
-                animation: {
-                  duration: 0, // general animation time
-                },
-                hover: {
-                  animationDuration: 0, // duration of animations when hovering an item
-                },
-                responsiveAnimationDuration: 0, // animation duration after a resize
-              }
-            }
-          });
-        }
-      },
-      error: function (xhr, ajaxOptions, thrownError) {
-        console.log('errror!');
-        alert(xhr.status);
-        alert(thrownError);
-      }
-    });
-  } else {
-    console.log('no pw set: ' + oldPassword);
+  if ( globalPassword === undefined || globalPassword === null || globalPassword === '' ) {
+    console.error('no pw set: ' + globalPassword);
     pwe.style.display = 'block';
-
   }
 
+////////////////////////////////////////////////////////////////////////////////
+// DOM manipulation here
 
-  // TODO add service worker code here
+  function addSensorCardElement ( element ) {
+    console.log('hunid: ' + element.humidity + ' sensor: ' + element.sensor );
+    var humidityValue = element.humidity == -1000 ? '' : element.humidity / 100 + ' %';
+    $( "#sensors").append( '<div class=\"row center\">\
+            <div class="card blue-grey darken-2">\
+            <div class="card-content white-text">\
+            <span class="card-title" style="font-weight:500">' + element.description + '</span>\
+            <p><h5>' + element.temperature/100 + '&deg; C</h5></p>\
+            <p><h5>' + humidityValue + '</h5></p>\
+            <p><span> gemessen am: ' + new Date(element.date).toLocaleString() + ' </span></p>\
+        </div>\
+        <div class="card-action" onClick="gotoChartPage(\'' + element.sensor + '\',\''+ element.description + '\',\'/chart.html\');"><a>Show Chart</a>\
+          </div>\
+        </div>\
+      </div>');
+  }
+
+  
+////////////////////////////////////////////////////////////////////////////////
+
+  getSensorData().then ( (result) => {
+    var dos = [];
+    for ( var element in result.data ) {
+      var sensor = result.data[element].sensor
+      console.log('sensor data: ' + sensor);
+      addSensorCardElement ( result.data[element]);
+      // dos.push(getSensorDataForChart(sensor, 10));
+    }
+    return Promise.all(dos);
+  }).then( (result) => {
+    console.log('result is: ' + result + 'json: ' + JSON.stringify(result));
+    for ( var element in result ) {
+      console.log('Final result of getSensorDataForChat: ' + element + ' : ' + JSON.stringify(element));
+    }
+  }).catch ( ( error ) => {
+    if ( error.error == 1 ) {
+      console.log('password not correct');
+      pwnc.style.display = 'block';
+    }
+  });
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // Service worker code here
 
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker
@@ -124,3 +123,5 @@
 
 
 })();
+
+////////////////////////////////////////////////////////////////////////////////
