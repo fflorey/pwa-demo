@@ -94,7 +94,12 @@ function isTimeForNextEntryReached(hash) {
         var ref = firebase.database().ref('/sensorvalues/' + hash).orderByKey().limitToLast(1);
         console.log('ref: ' + ref);
         ref.once('value').then(snapshot => {
-            console.log('last entry: ' + JSON.stringify(snapshot));
+            console.log('last entry (str): ' + JSON.stringify(snapshot) + ' pure: ' + snapshot + ' val ' + snapshot.val());
+            console.log('type: ' + typeof(snapshot) + ' len: ' + snapshot.length);
+            if ( snapshot.val() === null ) {
+                return resolve(hash);
+            }
+
             snapshot.forEach((key) => {
                 var dateval = key.val().date;
                 console.log('Date of last entry: ' + new Date(dateval).toLocaleDateString() + ' date ' + new Date(dateval).toLocaleTimeString());
@@ -109,6 +114,12 @@ function isTimeForNextEntryReached(hash) {
         console.error('error: ' + err);
     })
 }
+
+isTimeForNextEntryReached('984239842398429').then( res => {
+    console.log('es_ ' + res);
+})
+
+/*
 
 getValues().then((hash) => {
     console.log('hash value: ' + hash);
@@ -126,6 +137,7 @@ getValues().then((hash) => {
     console.error('error: ' + error);
 });
 
+*/
 
 /*
 
@@ -134,7 +146,6 @@ getValues().then((hash) => {
 getValues3().then((result) => {
     var newArray = {};
     newArray = {};
-
     result.forEach((res) => {
         console.log('Res: ' + res.key);
         newArray[res.key] = new Object();

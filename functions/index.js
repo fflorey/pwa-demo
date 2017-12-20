@@ -113,6 +113,9 @@ function purgeDatabase() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// not every request will be stored in the database for the chart, but only
+// every 1 hour (or whatever is configured here: in miliseconds, so 
+// 60*60*1000 is 1 hour
 
 function isTimeForNextEntryReached(hash) {
     return new Promise((resolve, reject) => {
@@ -120,7 +123,11 @@ function isTimeForNextEntryReached(hash) {
         var ref = admin.database().ref('/sensorvalues/' + hash).orderByKey().limitToLast(1);
         console.log('ref: ' + ref);
         ref.once('value').then(snapshot => {
-            console.log('last entry: ' + JSON.stringify(snapshot));
+            console.log('last entry (str): ' + JSON.stringify(snapshot) + ' pure: ' + snapshot + ' val ');
+            if ( snapshot.val() === null ) {
+                console.log('result is null, but ok');
+                return resolve(hash);
+            }
             snapshot.forEach((key) => {
                 var dateval = key.val().date;
                 console.log('Date of last entry: ' + new Date(dateval).toLocaleDateString() + ' date ' + new Date(dateval).toLocaleTimeString());
@@ -130,6 +137,7 @@ function isTimeForNextEntryReached(hash) {
                 }
                 return resolve('0');
             });
+            return reject('error - something went wrong, because result is not handled: ' + JSON.stringify(snapshot));
         }).catch((err) => {
             console.error('error: ' + err);
             return reject(err);
