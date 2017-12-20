@@ -1,7 +1,7 @@
 
 
 exports.globals = {
-	secretForWriteAccess: 'simsalabimm4711kruemelmonster'
+	secretForWriteAccess: '[secret]'
 };
 
 exports.errors = {
