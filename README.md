@@ -8,3 +8,7 @@ What it contains:
 2) A set of simple firebase "functions", which returns the stored temperature values (and can store new ones)
 
 What is not included (so far): The sourcecode for the sensors... may follow later on
+
+**Aha
+
+*B
